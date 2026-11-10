@@ -34,11 +34,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;display:none;z-index:9}
 .logo-prev{height:64px;width:64px;object-fit:contain;border:1px solid var(--ln);border-radius:10px;background:#fff}
 .rh{display:none}
-.ex{margin-left:10px;background:none;border:1px solid #fff;color:#fff;border-radius:8px;padding:6px 12px;font:600 13px "Trebuchet MS",Verdana,system-ui,sans-serif;cursor:pointer}.ex:hover{background:rgba(255,255,255,.18)}
+.ex{margin-left:10px;background:none;border:1px solid #fff;color:#fff;border-radius:8px;padding:6px 12px;font:600 13px "Trebuchet MS",Verdana,system-ui,sans-serif;cursor:pointer}.ex:disabled{opacity:.6;cursor:wait}.ex:hover{background:rgba(255,255,255,.18)}
 .sy{margin-left:auto;font-size:12px;opacity:.9;text-align:right}
 html{-webkit-text-size-adjust:100%;touch-action:manipulation}
 @media(max-width:700px){
-header{padding:10px 14px}header img{height:38px;width:38px}header h1{font-size:17px}
+header{padding:10px 14px;flex-wrap:wrap;row-gap:6px}header img{height:38px;width:38px}header h1{font-size:17px}
 nav{position:fixed;top:auto;bottom:0;left:0;right:0;border-bottom:0;border-top:1px solid var(--ln);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));gap:2px;z-index:5}
 nav button{flex:1 1 0;padding:10px 2px;font-size:12px;border-radius:10px;text-align:center}
 main{padding:12px 10px calc(84px + env(safe-area-inset-bottom,0px))}
@@ -52,7 +52,7 @@ table{min-width:420px}
 }
 @media print{header,nav,.noprint,#toast{display:none!important}.rh{display:flex;align-items:center;gap:10px;margin-bottom:10px}.rh img{height:40px}body{background:#fff;color:#000}.card{border:0;padding:0}th{background:#ddd!important;color:#000!important}}
 </style></head><body>
-<header><img id="hl" alt="" style="display:none"><h1 id="hn"></h1><span class="sy" id="sy">Connecting…</span><button class="ex" onclick="exitApp()" title="Save and exit">Exit</button></header>
+<header><img id="hl" alt="" style="display:none"><h1 id="hn"></h1><span class="sy" id="sy">Connecting…</span><button class="ex" id="sb" onclick="syncNow()" title="Sync now">Sync</button><button class="ex" onclick="exitApp()" title="Save and exit">Exit</button></header>
 <nav id="nav"></nav><main id="m"></main><div id="toast"></div>
 <script>
 const K='helpbook-v1',$=s=>document.querySelector(s),pad=n=>String(n).padStart(2,'0'),
@@ -84,6 +84,11 @@ async function pull(){if(!on()||busy)return;
   if(ch){keep();rd()}
   if(up){S.ts=Date.now();keep();await push()}else setSt('Synced ✓')}
  catch(e){setSt('Not synced – '+e.message)}}
+async function syncNow(){if(!on()){toast('Sync is not set up yet. Enter your address and key here.');go('set');return}
+ const b=$('#sb');b.disabled=true;b.textContent='Syncing…';setSt('Syncing…');clearTimeout(pushT);
+ try{for(let i=0;i<50&&busy;i++)await new Promise(r=>setTimeout(r,100));if(S.ts!==RTS)await push();await pull()}catch(e){setSt('Not synced – '+e.message)}
+ for(let i=0;i<50&&busy;i++)await new Promise(r=>setTimeout(r,100));
+ b.disabled=false;b.textContent='Sync';toast($('#sy').textContent.indexOf('Synced')==0?'Synced with your other devices':$('#sy').textContent)}
 async function exitApp(){clearTimeout(pushT);keep();if(on()){for(let i=0;i<50&&busy;i++)await new Promise(r=>setTimeout(r,100));await push();for(let i=0;i<50&&busy;i++)await new Promise(r=>setTimeout(r,100))}
  const ok=!on()||$('#sy').textContent.indexOf('Synced')==0;CFG={};
  document.body.innerHTML=`<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:#f3f6f4;color:#16302b;font:16px 'Trebuchet MS',Verdana,sans-serif"><h2 style="font-family:Georgia,serif;margin:0">${ok?'Saved. You can close this window.':'Saved on this device.'}</h2><p style="margin:0;max-width:340px">${ok?'Your register is up to date on all devices.':'Syncing did not finish. It will sync the next time you open the app online.'}</p><button onclick="location.reload()" style="padding:12px 20px;border:0;border-radius:10px;background:#0e7c66;color:#fff;font:600 15px Verdana,sans-serif">Open again</button></div>`;
