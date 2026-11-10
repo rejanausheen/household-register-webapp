@@ -10,7 +10,7 @@ header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var
 header img{height:44px;width:44px;object-fit:contain;background:#fff;border-radius:10px;padding:3px}
 header h1{font:700 20px/1.2 Georgia,serif;margin:0}
 nav{display:flex;gap:4px;overflow-x:auto;padding:8px 10px;background:var(--card);border-bottom:1px solid var(--ln);position:sticky;top:env(safe-area-inset-top,0px);z-index:3}
-nav button{flex:0 0 auto;border:0;background:none;color:var(--mut);font:600 14px inherit;padding:8px 13px;border-radius:999px;cursor:pointer}
+nav button{flex:0 0 auto;border:0;background:none;color:var(--mut);font:600 14px "Trebuchet MS",Verdana,system-ui,sans-serif;padding:8px 13px;border-radius:999px;cursor:pointer}
 nav button.on{background:var(--pri);color:#fff}
 main{max-width:980px;margin:0 auto;padding:14px}
 .card{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:14px;margin-bottom:14px}
@@ -19,7 +19,7 @@ h2{font:700 18px Georgia,serif;margin:0 0 10px}h3{margin:0 0 8px;font-size:15px}
 label{display:block;font-size:13px;color:var(--mut);flex:1 1 150px}
 input,select,textarea{width:100%;margin-top:3px;padding:9px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
 input[type=checkbox]{width:auto;margin:0 6px 0 0}
-button.b{border:0;background:var(--pri);color:#fff;border-radius:9px;padding:9px 15px;font:600 14px inherit;cursor:pointer}
+button.b{border:0;background:var(--pri);color:#fff;border-radius:9px;padding:9px 15px;font:600 14px "Trebuchet MS",Verdana,system-ui,sans-serif;cursor:pointer}
 button.b:hover{background:var(--pri2)}button.g{background:none;color:var(--pri);border:1px solid var(--pri)}button.d{background:none;color:var(--at);border:1px solid var(--at)}
 button.s{padding:5px 10px;font-size:13px}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f2a900;outline-offset:1px}
@@ -34,6 +34,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;display:none;z-index:9}
 .logo-prev{height:64px;width:64px;object-fit:contain;border:1px solid var(--ln);border-radius:10px;background:#fff}
 .rh{display:none}
+.ex{margin-left:10px;background:none;border:1px solid #fff;color:#fff;border-radius:8px;padding:6px 12px;font:600 13px "Trebuchet MS",Verdana,system-ui,sans-serif;cursor:pointer}.ex:hover{background:rgba(255,255,255,.18)}
 .sy{margin-left:auto;font-size:12px;opacity:.9;text-align:right}
 html{-webkit-text-size-adjust:100%;touch-action:manipulation}
 @media(max-width:700px){
@@ -51,7 +52,7 @@ table{min-width:420px}
 }
 @media print{header,nav,.noprint,#toast{display:none!important}.rh{display:flex;align-items:center;gap:10px;margin-bottom:10px}.rh img{height:40px}body{background:#fff;color:#000}.card{border:0;padding:0}th{background:#ddd!important;color:#000!important}}
 </style></head><body>
-<header><img id="hl" alt="" style="display:none"><h1 id="hn"></h1><span class="sy" id="sy">Connecting…</span></header>
+<header><img id="hl" alt="" style="display:none"><h1 id="hn"></h1><span class="sy" id="sy">Connecting…</span><button class="ex" onclick="exitApp()" title="Save and exit">Exit</button></header>
 <nav id="nav"></nav><main id="m"></main><div id="toast"></div>
 <script>
 const K='helpbook-v1',$=s=>document.querySelector(s),pad=n=>String(n).padStart(2,'0'),
@@ -60,7 +61,7 @@ MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
 money=n=>'₹'+Math.round(n).toLocaleString('en-IN'),dim=(y,m)=>new Date(y,m,0).getDate(),
 key=(y,m,d)=>y+'-'+pad(m)+'-'+pad(d),uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5),
 fd=s=>s?s.slice(8,10)+'-'+s.slice(5,7)+'-'+s.slice(0,4):'';
-const DEF=()=>({label:'Household Help Register',logo:'',people:[],att:{},pay:[],hol:[],extra:[]});
+const DEF=()=>({label:'Household Help Register',logo:'',people:[],att:{},pay:[],hol:[],extra:[],at:{},nt:{},nat:{},del:{},lbt:0});
 let S;try{S=Object.assign(DEF(),JSON.parse(localStorage.getItem(K)||'{}'))}catch(e){S=DEF()}
 const now=new Date(),ui={tab:'att',pid:'',mon:now.getFullYear()+'-'+pad(now.getMonth()+1),ry:now.getFullYear(),rt:'month',rp:'all',edit:null};
 let CFG={};try{CFG=JSON.parse(localStorage.getItem(K+'-cfg')||'{}')}catch(e){}
@@ -69,19 +70,34 @@ const on=()=>CFG.url&&CFG.key,setSt=t=>{const e=$('#sy');if(e)e.textContent=t};
 async function api(action,x){const r=await fetch(CFG.url,{method:'POST',body:JSON.stringify(Object.assign({key:CFG.key,action},x))}),j=await r.json();if(!j.ok)throw new Error(j.error||'Request failed');return j}
 function keep(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){toast('Could not save: browser storage is full or blocked.')}}
 function save(){S.ts=Date.now();keep();if(on()){setSt('Saving…');clearTimeout(pushT);pushT=setTimeout(push,900)}}
-async function push(){if(busy){dirty=true;return}busy=true;
- try{let j=await api('set',{data:S,expect:RTS});if(j.conflict){S=merge(S,j.result);S.ts=Date.now();keep();RTS=j.result.ts||0;j=await api('set',{data:S,expect:RTS});draw()}RTS=S.ts;setSt('Synced ✓')}
+const canon=x=>JSON.stringify(x,(k,v)=>k==='ts'?undefined:(v&&typeof v=='object'&&!Array.isArray(v)?Object.fromEntries(Object.keys(v).sort().map(z=>[z,v[z]])):v));
+const rd=()=>{const a=document.activeElement;if(!(a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))&&$('#m'))draw()};
+async function push(){if(busy){dirty=true;return}busy=true;let ok=0;
+ try{for(let i=0;i<4&&!ok;i++){const j=await api('set',{data:S,expect:RTS});if(!j.conflict){RTS=S.ts;ok=1;break}S=merge(S,j.result);S.ts=Date.now();keep();RTS=j.result.ts||0;rd()}
+  setSt(ok?'Synced ✓':'Not synced – busy, will retry')}
  catch(e){setSt('Not synced – '+e.message)}busy=false;if(dirty){dirty=false;push()}}
 async function pull(){if(!on()||busy)return;
- try{const r=(await api('get')).result||{};RTS=r.ts||0;
-  if(!r.ts){if(!S.ts)S.ts=Date.now();await push();return}
-  if(r.ts>(S.ts||0)){if(!S.ts&&S.people.length){S=merge(S,r);save();draw();toast('Combined this device’s data with your synced data')}
-   else{S=Object.assign(DEF(),r);keep();const a=document.activeElement;if(!(a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName)))draw()}}
-  else if(r.ts<S.ts)await push();
-  setSt('Synced ✓')}catch(e){setSt('Not synced – '+e.message)}}
+ try{const r=(await api('get')).result||{};
+  if(!r.ts){RTS=0;if(!S.ts)S.ts=Date.now();await push();return}
+  if(r.ts===RTS){setSt(S.ts===RTS?'Synced ✓':'Saving…');return}
+  const m=merge(S,r),ch=canon(m)!==canon(S),up=canon(m)!==canon(r);RTS=r.ts;S=m;
+  if(ch){keep();rd()}
+  if(up){S.ts=Date.now();keep();await push()}else setSt('Synced ✓')}
+ catch(e){setSt('Not synced – '+e.message)}}
+async function exitApp(){clearTimeout(pushT);keep();if(on()){for(let i=0;i<50&&busy;i++)await new Promise(r=>setTimeout(r,100));await push();for(let i=0;i<50&&busy;i++)await new Promise(r=>setTimeout(r,100))}
+ const ok=!on()||$('#sy').textContent.indexOf('Synced')==0;CFG={};
+ document.body.innerHTML=`<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:#f3f6f4;color:#16302b;font:16px 'Trebuchet MS',Verdana,sans-serif"><h2 style="font-family:Georgia,serif;margin:0">${ok?'Saved. You can close this window.':'Saved on this device.'}</h2><p style="margin:0;max-width:340px">${ok?'Your register is up to date on all devices.':'Syncing did not finish. It will sync the next time you open the app online.'}</p><button onclick="location.reload()" style="padding:12px 20px;border:0;border-radius:10px;background:#0e7c66;color:#fff;font:600 15px Verdana,sans-serif">Open again</button></div>`;
+ try{window.close()}catch(e){}}
 function saveSync(){const u=$('#su').value.trim(),k=$('#sk').value.trim();if(!/^https:\/\/script\.google\.com\//.test(u)||!k)return toast('Paste the Web app address (it starts with https://script.google.com) and your secret key.');CFG={url:u,key:k};try{localStorage.setItem(K+'-cfg',JSON.stringify(CFG))}catch(e){}setSt('Connecting…');pull();toast('Sync settings saved')}
 function stopSync(){CFG={};try{localStorage.removeItem(K+'-cfg')}catch(e){}setSt('This device only');draw()}
-function merge(a,b){const o=Object.assign(DEF(),b),u=(x,y,k)=>[...new Map([...(y||[]),...(x||[])].map(i=>[i[k],i])).values()];o.people=u(a.people,b.people,'id');o.pay=u(a.pay,b.pay,'id');o.extra=u(a.extra,b.extra,'id');o.hol=u(a.hol,b.hol,'date');o.att={};[...new Set([...Object.keys(a.att||{}),...Object.keys(b.att||{})])].forEach(k=>o.att[k]=Object.assign({},(b.att||{})[k],(a.att||{})[k]));if(!b.logo&&a.logo)o.logo=a.logo;return o}
+function merge(a,b){const D=Object.assign({},b.del,a.del),o=Object.assign(DEF(),b);o.del=D;
+ const pick=(x,y,k,pre)=>{const m=new Map();(y||[]).forEach(i=>m.set(i[k],i));(x||[]).forEach(i=>{const j=m.get(i[k]);if(!j||(i.t||0)>=(j.t||0))m.set(i[k],i)});return[...m.values()].filter(i=>!D[pre+i[k]]&&!(i.pid&&D['p:'+i.pid])).sort((p,q)=>String(p[k]).localeCompare(String(q[k])))};
+ o.people=pick(a.people,b.people,'id','p:');o.pay=pick(a.pay,b.pay,'id','y:');o.extra=pick(a.extra,b.extra,'id','x:');o.hol=pick(a.hol,b.hol,'date','h:');
+ const live=new Set(o.people.map(p=>p.id)),u=(...z)=>[...new Set(z.flatMap(q=>Object.keys(q||{})))];
+ const cm=(ma,ta,mb,tb)=>{const m={},t={};u(ma,ta,mb,tb).forEach(pid=>{if(!live.has(pid))return;m[pid]={};t[pid]={};const A=(ma||{})[pid]||{},B=(mb||{})[pid]||{},TA=(ta||{})[pid]||{},TB=(tb||{})[pid]||{};u(A,B,TA,TB).forEach(d=>{const x=TA[d]||0,y=TB[d]||0,v=x>y?A[d]:y>x?B[d]:(A[d]!==undefined?A[d]:B[d]);if(v!==undefined)m[pid][d]=v;if(x||y)t[pid][d]=Math.max(x,y)})});return[m,t]};
+ [o.att,o.at]=cm(a.att,a.at,b.att,b.at);[o.nt,o.nat]=cm(a.nt,a.nat,b.nt,b.nat);
+ if((a.lbt||0)>(b.lbt||0)){o.label=a.label;o.logo=a.logo;o.lbt=a.lbt}else if(!b.logo&&a.logo&&!b.lbt)o.logo=a.logo;
+ return o}
 function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',2600)}
 const hm=()=>Object.fromEntries(S.hol.map(h=>[h.date,h.name])),P=id=>S.people.find(p=>p.id==id),
 ym=s=>[+s.slice(0,4),+s.slice(5,7)];
@@ -105,11 +121,13 @@ const V={
 att(){if(!S.people.length)return none();const p=P(ui.pid),[y,m]=ui.mon.split('-').map(Number),H=hm(),a=S.att[p.id]||{},first=new Date(y,m-1,1).getDay(),st=stats(p,y,m);
  let c=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="wd">${d}</div>`).join('')+'<div class="day e"></div>'.repeat(first);
  for(let d=1;d<=dim(y,m);d++){const k=key(y,m,d),v=a[k],cl=v||(H[k]?'hol':''),lb=v=='P'?'Present':v=='A'?'Absent':v=='H'?'Half day':H[k]?esc(H[k]).slice(0,14):'';
-  c+=`<button class="day ${cl}" onclick="tog('${k}')" aria-label="${k} ${lb}"><b>${d}</b><small>${lb}${exd(p.id,k)?' +'+money(exd(p.id,k)):''}</small></button>`}
+  c+=`<button class="day ${cl}" onclick="tog('${k}')" aria-label="${k} ${lb}"><b>${d}</b><small>${lb}${exd(p.id,k)?' +'+money(exd(p.id,k)):''}${(S.nt[p.id]||{})[k]?' 📝':''}</small></button>`}
  return `<div class="card"><div class="row">${psel('ap',ui.pid)}<label>Month<input type="month" value="${ui.mon}" onchange="ui.mon=this.value||ui.mon;draw()"></label></div>
  <div class="sum"><span>Present <b>${st.pr}</b></span><span>Half <b>${st.hf}</b></span><span>Absent <b>${st.ab}</b></span><span>Holidays <b>${st.hl}</b></span><span>Extra work <b>${money(st.ex)}</b></span><span>Earned <b>${money(st.earned)}</b></span><span>Paid <b>${money(st.paid)}</b></span><span>Balance <b class="${st.earned-st.paid>0?'bad':'ok'}">${money(st.earned-st.paid)}</b></span></div>
  <div class="cal">${c}</div><p class="mut">Tap a day to cycle: Present, Absent, Half day, blank. Blue days are holidays.</p>
  <div class="row noprint"><button class="b g s" onclick="allP()">Mark all working days present</button><button class="b d s" onclick="clr()">Clear this month</button></div></div>
+ <div class="card"><h2>Notes for a day</h2><div class="row"><label>Day<input id="nd" type="date" min="${ui.mon}-01" max="${key(y,m,dim(y,m))}" value="${ui.mon==new Date().toISOString().slice(0,7)?new Date().toISOString().slice(0,10):ui.mon+'-01'}"></label><label style="flex:2 1 220px">Note<input id="nn" placeholder="Came late, left early, reason for leave…"></label><button class="b" onclick="saveNote()">Save note</button></div><p class="mut">Days with a note show 📝 on the calendar. Saving an empty note removes it.</p>
+ <div class="tw"><table><tr><th>Day</th><th>Note</th><th></th></tr>${Object.entries(S.nt[p.id]||{}).filter(([d,t])=>t&&d.slice(0,7)==ui.mon).sort().map(([d,t])=>`<tr><td>${fd(d)}</td><td style="white-space:normal">${esc(t)}</td><td><button class="b g s" onclick="editNote('${d}')">Edit</button> <button class="b d s" onclick="delNote('${d}')">Delete</button></td></tr>`).join('')||'<tr><td colspan=3 class="empty">No notes this month.</td></tr>'}</table></div></div>
  <div class="card"><h2>Extra work payment</h2><p class="mut">Pay ${esc(p.name)} extra for work done on a particular day. It is added to this month’s earnings.</p><div class="row"><label>Day<input id="xd" type="date" min="${ui.mon}-01" max="${key(y,m,dim(y,m))}" value="${ui.mon==new Date().toISOString().slice(0,7)?new Date().toISOString().slice(0,10):ui.mon+'-01'}"></label><label>Amount (₹)<input id="xa" type="number" min="0"></label><label>Work done<input id="xn" placeholder="Guests, deep cleaning, festival…"></label></div><label style="margin-top:10px"><input type="checkbox" id="xp" checked>Paid now (also adds it to Payments)</label><div class="row" style="margin-top:8px"><button class="b" onclick="addExtra()">Add extra work</button></div>
  <div class="tw"><table><tr><th>Day</th><th>Work done</th><th class="n">Amount</th><th></th></tr>${(S.extra||[]).filter(x=>x.pid==p.id&&x.date.slice(0,7)==ui.mon).sort((a,b)=>a.date.localeCompare(b.date)).map(x=>`<tr><td>${fd(x.date)}</td><td>${esc(x.note)}</td><td class="n">${money(x.amt)}</td><td><button class="b d s" onclick="delExtra('${x.id}')">Delete</button></td></tr>`).join('')||'<tr><td colspan=4 class="empty">No extra work recorded this month.</td></tr>'}</table></div></div>`},
 pay(){if(!S.people.length)return none();const f=ui.pf||'all',y=ui.ry,L=S.pay.filter(x=>(f=='all'||x.pid==f)&&x.date.slice(0,4)==y).sort((a,b)=>b.date.localeCompare(a.date));
@@ -126,27 +144,31 @@ hol(){const y=ui.ry,L=S.hol.filter(h=>h.date.slice(0,4)==y).sort((a,b)=>a.date.l
  return `<div class="card"><h2>Holidays</h2><p class="mut">On a holiday, helpers are not marked absent. Monthly salary is paid in full; per-day pay follows each person’s “pay for holidays” setting.</p><div class="row"><label>Date<input id="hd" type="date"></label><label>Name<input id="hn2" placeholder="Diwali, Eid, Christmas…"></label><button class="b" onclick="addHol()">Add holiday</button></div>
  <div class="row" style="margin-top:12px"><label>Year<input type="number" value="${y}" onchange="ui.ry=+this.value;draw()"></label><button class="b g" onclick="sundays()">Add all Sundays of ${y}</button></div></div>
  <div class="card"><div class="tw"><table><tr><th>Date</th><th>Day</th><th>Holiday</th><th></th></tr>${L.map(h=>`<tr><td>${fd(h.date)}</td><td>${new Date(h.date+'T00:00').toLocaleDateString('en-IN',{weekday:'long'})}</td><td>${esc(h.name)}</td><td><button class="b d s" onclick="delHol('${h.date}')">Delete</button></td></tr>`).join('')||`<tr><td colspan=4 class="empty">No holidays listed for ${y}.</td></tr>`}</table></div></div>`},
-rep(){setTimeout(rep,0);return `<div class="card noprint"><h2>Reports</h2><div class="row"><label>Report<select onchange="ui.rt=this.value;rep()" id="rt">${[['month','Monthly statement (everyone)'],['year','Yearly summary'],['ledger','Payment ledger'],['reg','Attendance register']].map(([k,n])=>`<option value="${k}" ${k==ui.rt?'selected':''}>${n}</option>`).join('')}</select></label>${psel('rp',ui.rp,1)}<label>Month<input type="month" value="${ui.mon}" onchange="ui.mon=this.value||ui.mon;ui.ry=+ui.mon.slice(0,4);rep()"></label><label>Year<input type="number" value="${ui.ry}" onchange="ui.ry=+this.value;rep()"></label></div></div><div class="card" id="rep"></div>`},
-set(){return `<div class="card"><h2>App name and logo</h2><div class="row"><label>Label shown at the top<input id="sl" value="${esc(S.label)}"></label><button class="b" onclick="S.label=$('#sl').value.trim()||'Household Help Register';save();brand();toast('Label saved')">Save label</button></div>
- <div class="row" style="margin-top:14px">${S.logo?`<img class="logo-prev" src="${S.logo}" alt="Logo">`:'<span class="mut">No logo yet.</span>'}<label>Choose a logo image<input type="file" accept="image/*" onchange="logo(this)"></label>${S.logo?'<button class="b d" onclick="S.logo=\'\';save();draw()">Remove logo</button>':''}</div></div>
+rep(){setTimeout(rep,0);return `<div class="card noprint"><h2>Reports</h2><div class="row"><label>Report<select onchange="ui.rt=this.value;rep()" id="rt">${[['month','Monthly statement (everyone)'],['year','Yearly summary'],['ledger','Payment ledger'],['reg','Attendance register'],['notes','Attendance notes']].map(([k,n])=>`<option value="${k}" ${k==ui.rt?'selected':''}>${n}</option>`).join('')}</select></label>${psel('rp',ui.rp,1)}<label>Month<input type="month" value="${ui.mon}" onchange="ui.mon=this.value||ui.mon;ui.ry=+ui.mon.slice(0,4);rep()"></label><label>Year<input type="number" value="${ui.ry}" onchange="ui.ry=+this.value;rep()"></label></div></div><div class="card" id="rep"></div>`},
+set(){return `<div class="card"><h2>App name and logo</h2><div class="row"><label>Label shown at the top<input id="sl" value="${esc(S.label)}"></label><button class="b" onclick="S.label=$('#sl').value.trim()||'Household Help Register';S.lbt=Date.now();save();brand();toast('Label saved')">Save label</button></div>
+ <div class="row" style="margin-top:14px">${S.logo?`<img class="logo-prev" src="${S.logo}" alt="Logo">`:'<span class="mut">No logo yet.</span>'}<label>Choose a logo image<input type="file" accept="image/*" onchange="logo(this)"></label>${S.logo?'<button class="b d" onclick="S.logo=\'\';S.lbt=Date.now();save();draw()">Remove logo</button>':''}</div></div>
  <div class="card"><h2>Sync across devices</h2><p class="mut">Uses your own free Google account. Do the one-time steps in SETUP.txt, then enter the same address and key on every phone and computer.</p><div class="row"><label>Web app address<input id="su" value="${esc(CFG.url||'')}" placeholder="https://script.google.com/macros/s/…/exec"></label><label>Secret key<input id="sk" type="password" value="${esc(CFG.key||'')}"></label></div><div class="row" style="margin-top:10px"><button class="b" onclick="saveSync()">Save and sync</button>${on()?'<button class="b g" onclick="pull()">Sync now</button><button class="b d" onclick="stopSync()">Turn off sync</button>':''}</div></div>
  <div class="card"><h2>Backup and restore</h2><p class="mut">Data is also kept on each device, so the app opens offline. Copy a backup now and then and keep it somewhere safe.</p><div class="row"><button class="b g" onclick="txt('Backup (copy and save this text)',JSON.stringify(S))">Show backup text</button><button class="b g" onclick="restore()">Restore from backup text</button></div><div id="tx"></div></div>`}};
-function tog(k){const p=P(ui.pid),a=S.att[p.id]=S.att[p.id]||{},n={'':'P',P:'A',A:'H',H:''}[a[k]||''];if(n)a[k]=n;else delete a[k];save();draw()}
-function allP(){const p=P(ui.pid),[y,m]=ui.mon.split('-').map(Number),H=hm(),a=S.att[p.id]=S.att[p.id]||{};for(let d=1;d<=dim(y,m);d++){const k=key(y,m,d);if(!H[k]&&!a[k])a[k]='P'}save();draw()}
-function clr(){if(!confirm('Clear all attendance marks for this person in this month?'))return;const p=P(ui.pid),a=S.att[p.id]||{};Object.keys(a).forEach(k=>{if(k.slice(0,7)==ui.mon)delete a[k]});save();draw()}
+function stamp(m,pid,k){(m[pid]=m[pid]||{})[k]=Date.now()}
+function tog(k){const p=P(ui.pid),a=S.att[p.id]=S.att[p.id]||{},n={'':'P',P:'A',A:'H',H:''}[a[k]||''];if(n)a[k]=n;else delete a[k];stamp(S.at,p.id,k);save();draw()}
+function allP(){const p=P(ui.pid),[y,m]=ui.mon.split('-').map(Number),H=hm(),a=S.att[p.id]=S.att[p.id]||{};for(let d=1;d<=dim(y,m);d++){const k=key(y,m,d);if(!H[k]&&!a[k]){a[k]='P';stamp(S.at,p.id,k)}}save();draw()}
+function clr(){if(!confirm('Clear all attendance marks for this person in this month?'))return;const p=P(ui.pid),a=S.att[p.id]||{};Object.keys(a).forEach(k=>{if(k.slice(0,7)==ui.mon){delete a[k];stamp(S.at,p.id,k)}});save();draw()}
+function saveNote(){const p=P(ui.pid),d=$('#nd').value,t=$('#nn').value.trim();if(!d)return toast('Choose a day.');const m=S.nt[p.id]=S.nt[p.id]||{};if(t)m[d]=t;else delete m[d];stamp(S.nat,p.id,d);save();toast(t?'Note saved':'Note removed');draw()}
+function editNote(d){$('#nd').value=d;$('#nn').value=S.nt[ui.pid][d];$('#nn').focus()}
+function delNote(d){delete S.nt[ui.pid][d];stamp(S.nat,ui.pid,d);save();draw()}
 function addExtra(){const p=P(ui.pid),a=+$('#xa').value,d=$('#xd').value;if(!a||a<=0||!d)return toast('Choose a day and enter an amount above zero.');const x={id:uid(),pid:p.id,date:d,amt:a,note:$('#xn').value.trim()||'Extra work'};
  if($('#xp').checked){const q={id:uid(),pid:p.id,date:d,mon:d.slice(0,7),amt:a,note:'Extra work: '+x.note};S.pay.push(q);x.payId=q.id}
  (S.extra=S.extra||[]).push(x);save();toast('Extra work added');draw()}
-function delExtra(id){if(!confirm('Delete this extra work entry (and its linked payment, if any)?'))return;const x=S.extra.find(z=>z.id==id);if(x&&x.payId)S.pay=S.pay.filter(q=>q.id!=x.payId);S.extra=S.extra.filter(z=>z.id!=id);save();draw()}
+function delExtra(id){if(!confirm('Delete this extra work entry (and its linked payment, if any)?'))return;const x=S.extra.find(z=>z.id==id);if(x&&x.payId){S.del['y:'+x.payId]=Date.now();S.pay=S.pay.filter(q=>q.id!=x.payId)}S.del['x:'+id]=Date.now();S.extra=S.extra.filter(z=>z.id!=id);save();draw()}
 function addPay(){const a=+$('#pa').value,d=$('#pd').value,m=$('#pm').value,pid=$('#pp').value;if(!a||a<=0||!d||!m)return toast('Enter the date, month and an amount above zero.');S.pay.push({id:uid(),pid,date:d,mon:m,amt:a,note:$('#pn').value.trim()});save();toast('Payment saved');draw()}
-function delPay(id){if(confirm('Delete this payment?')){S.pay=S.pay.filter(x=>x.id!=id);save();draw()}}
-function savePerson(){const n=$('#fn').value.trim(),r=$('#fr').value.trim();if(!n||!r)return toast('Enter a name and a role.');const o={name:n,role:r,basis:$('#fb').value,rate:+$('#fa').value||0,phone:$('#fp').value.trim(),payHol:$('#fh').checked};
+function delPay(id){if(confirm('Delete this payment?')){S.del['y:'+id]=Date.now();S.pay=S.pay.filter(x=>x.id!=id);save();draw()}}
+function savePerson(){const n=$('#fn').value.trim(),r=$('#fr').value.trim();if(!n||!r)return toast('Enter a name and a role.');const o={name:n,role:r,basis:$('#fb').value,rate:+$('#fa').value||0,phone:$('#fp').value.trim(),payHol:$('#fh').checked,t:Date.now()};
  if(ui.edit)Object.assign(P(ui.edit),o);else{const p=Object.assign({id:uid()},o);S.people.push(p);ui.pid=p.id}save();ui.edit=null;toast('Saved');draw()}
-function delPerson(id){if(!confirm('Remove this person and all their attendance and payment records?'))return;S.people=S.people.filter(p=>p.id!=id);delete S.att[id];S.extra=(S.extra||[]).filter(x=>x.pid!=id);S.pay=S.pay.filter(x=>x.pid!=id);save();draw()}
-function addHol(){const d=$('#hd').value,n=$('#hn2').value.trim();if(!d||!n)return toast('Enter a date and a name.');S.hol=S.hol.filter(h=>h.date!=d);S.hol.push({date:d,name:n});save();draw()}
-function delHol(d){S.hol=S.hol.filter(h=>h.date!=d);save();draw()}
-function sundays(){const y=ui.ry;for(let m=1;m<=12;m++)for(let d=1;d<=dim(y,m);d++)if(new Date(y,m-1,d).getDay()==0){const k=key(y,m,d);if(!S.hol.some(h=>h.date==k))S.hol.push({date:k,name:'Sunday'})}save();draw()}
-function logo(i){const f=i.files[0];if(!f)return;const r=new FileReader;r.onload=()=>{const im=new Image;im.onload=()=>{const k=Math.min(1,240/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);S.logo=c.toDataURL('image/png');save();draw()};im.onerror=()=>toast('That file is not a usable image.');im.src=r.result};r.readAsDataURL(f)}
+function delPerson(id){if(!confirm('Remove this person and all their attendance and payment records?'))return;S.del['p:'+id]=Date.now();S.people=S.people.filter(p=>p.id!=id);delete S.att[id];delete S.nt[id];S.extra=(S.extra||[]).filter(x=>x.pid!=id);S.pay=S.pay.filter(x=>x.pid!=id);save();draw()}
+function addHol(){const d=$('#hd').value,n=$('#hn2').value.trim();if(!d||!n)return toast('Enter a date and a name.');delete S.del['h:'+d];S.hol=S.hol.filter(h=>h.date!=d);S.hol.push({date:d,name:n});save();draw()}
+function delHol(d){S.del['h:'+d]=Date.now();S.hol=S.hol.filter(h=>h.date!=d);save();draw()}
+function sundays(){const y=ui.ry;for(let m=1;m<=12;m++)for(let d=1;d<=dim(y,m);d++)if(new Date(y,m-1,d).getDay()==0){const k=key(y,m,d);if(!S.hol.some(h=>h.date==k)){delete S.del['h:'+k];S.hol.push({date:k,name:'Sunday'})}}save();draw()}
+function logo(i){const f=i.files[0];if(!f)return;const r=new FileReader;r.onload=()=>{const im=new Image;im.onload=()=>{const k=Math.min(1,240/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);S.logo=c.toDataURL('image/png');S.lbt=Date.now();save();draw()};im.onerror=()=>toast('That file is not a usable image.');im.src=r.result};r.readAsDataURL(f)}
 function txt(t,v,ta){$('#tx').innerHTML=`<p class="mut">${t}</p><textarea id="tb" rows="6" ${ta?'':'readonly'}>${esc(v)}</textarea><div class="row" style="margin-top:8px"><button class="b s" onclick="$('#tb').select();try{document.execCommand('copy');toast('Copied')}catch(e){toast('Select the text and copy it')}">Copy</button></div>`;$('#tb').select()}
 function restore(){$('#tx').innerHTML=`<p class="mut">Paste backup text, then press Restore. This replaces the current data.</p><textarea id="tb" rows="6"></textarea><div class="row" style="margin-top:8px"><button class="b s" onclick="doRestore()">Restore</button></div>`}
 function doRestore(){try{const x=JSON.parse($('#tb').value);if(!Array.isArray(x.people))throw 0;S=Object.assign(DEF(),x);save();toast('Restored');draw()}catch(e){toast('That text is not a valid backup.')}}
@@ -157,9 +179,10 @@ function rep(){const el=$('#rep');if(!el)return;const[y,m]=ym(ui.mon),t=ui.rt,pp
  else if(t=='year'&&ui.rp!='all'){const p=pp[0];T=`Yearly summary – ${p.name} – ${Y}`;hd=['Month','Present','Half','Absent','Holidays','Extra work','Earned','Paid','Balance','Due so far'];let e=0,pd=0,xt=0;rows=MN.map((n,i)=>{const s=stats(p,Y,i+1);e+=s.earned;pd+=s.paid;xt+=s.ex;return[n,s.pr,s.hf,s.ab,s.hl,money(s.ex),money(s.earned),money(s.paid),money(s.earned-s.paid),money(e-pd)]});tot=['Total','','','','',money(xt),money(e),money(pd),'',money(e-pd)]}
  else if(t=='year'){T=`Yearly summary – everyone – ${Y}`;hd=['Name','Role','Days present','Days absent','Earned','Paid','Due'];let e=0,pd=0;rows=pp.map(p=>{let a=0,b=0,x=0,z=0;for(let i=1;i<=12;i++){const s=stats(p,Y,i);a+=s.pr+s.hf/2;b+=s.ab+s.hf/2;x+=s.earned;z+=s.paid}e+=x;pd+=z;return[p.name,p.role,a,b,money(x),money(z),money(x-z)]});tot=['Total','','','',money(e),money(pd),money(e-pd)]}
  else if(t=='ledger'){T=`Payment ledger – ${ui.rp=='all'?'everyone':pp[0].name} – ${Y}`;hd=['Date','Person','For month','Note','Amount'];const L=S.pay.filter(x=>(ui.rp=='all'||x.pid==ui.rp)&&x.date.slice(0,4)==Y).sort((a,b)=>a.date.localeCompare(b.date));rows=L.map(x=>[fd(x.date),P(x.pid)?.name||'(removed)',x.mon,x.note,money(x.amt)]);tot=['Total','','','',money(L.reduce((s,x)=>s+ +x.amt,0))]}
+ else if(t=='notes'){T=`Attendance notes – ${ui.rp=='all'?'everyone':pp[0].name} – ${Y}`;hd=['Date','Person','Status','Note'];rows=[];pp.forEach(p=>Object.entries(S.nt[p.id]||{}).forEach(([d,x])=>{if(x&&d.slice(0,4)==Y)rows.push([d,p.name,({P:'Present',A:'Absent',H:'Half day'})[(S.att[p.id]||{})[d]]||(H[d]?'Holiday':'Not marked'),x])}));rows.sort((a,b)=>a[0].localeCompare(b[0])||a[1].localeCompare(b[1]));rows.forEach(r=>r[0]=fd(r[0]));tot=null}
  else{const p=pp[0];T=`Attendance register – ${p.name} – ${Y}`;hd=['Month',...Array.from({length:31},(_,i)=>i+1)];const a=S.att[p.id]||{};rows=MN.map((n,i)=>[n,...Array.from({length:31},(_,d)=>{if(d+1>dim(Y,i+1))return'';const k=key(Y,i+1,d+1),v=a[k];return v=='P'?'P':v=='A'?'A':v=='H'?'½':H[k]?'H':'–'})]);tot=null}
  RD={T,hd,rows,tot};
- el.innerHTML=`<div class="rh">${S.logo?`<img src="${S.logo}" alt="">`:''}<b>${esc(S.label)}</b></div><h2>${esc(T)}</h2><div class="tw"><table><tr>${hd.map((h,i)=>`<th class="${i>=hd.length-3&&t!='reg'?'n':''}">${esc(h)}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i>=hd.length-3&&t!='reg'?'n':''}">${esc(c)}</td>`).join('')}</tr>`).join('')}${tot?`<tr class="t">${tot.map((c,i)=>`<td class="${i>=hd.length-3?'n':''}">${esc(c)}</td>`).join('')}</tr>`:''}</table></div>
+ el.innerHTML=`<div class="rh">${S.logo?`<img src="${S.logo}" alt="">`:''}<b>${esc(S.label)}</b></div><h2>${esc(T)}</h2><div class="tw"><table><tr>${hd.map((h,i)=>`<th class="${i>=hd.length-3&&t!='reg'&&t!='notes'?'n':''}">${esc(h)}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i>=hd.length-3&&t!='reg'&&t!='notes'?'n':''}">${esc(c)}</td>`).join('')}</tr>`).join('')}${tot?`<tr class="t">${tot.map((c,i)=>`<td class="${i>=hd.length-3?'n':''}">${esc(c)}</td>`).join('')}</tr>`:''}</table></div>
  ${t=='reg'?'<p class="mut">P present, A absent, ½ half day, H holiday, – not marked.</p>':''}<div class="row noprint" style="margin-top:12px"><button class="b" onclick="window.print()">Print or save as PDF</button><button class="b g" onclick="csv()">Show as CSV</button></div><div id="tx" class="noprint"></div>`}
 function csv(){const q=c=>'"'+String(c).replace(/"/g,'""')+'"',a=[RD.T,RD.hd,...RD.rows];if(RD.tot)a.push(RD.tot);txt('Copy this text and paste it into Excel or Google Sheets.',a.map(r=>[].concat(r).map(q).join(',')).join('\n'))}
 draw();if(on()){setSt('Connecting…');pull();setInterval(pull,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)pull()})}else setSt('This device only');
