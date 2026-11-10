@@ -6,12 +6,12 @@
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a17;--card:#17261f;--ink:#e6f1ed;--mut:#9bb0a9;--ln:#2a3d36;--pri:#3cc4a3;--pri2:#2aa085;--p:#173d2c;--pt:#7be0aa;--a:#46241a;--at:#ff9b78;--h:#40340f;--ht:#f2cf6b;--hol:#1d2c4d;--holt:#9fbcf7}}
 :root[data-theme="dark"]{--bg:#0f1a17;--card:#17261f;--ink:#e6f1ed;--mut:#9bb0a9;--ln:#2a3d36;--pri:#3cc4a3;--pri2:#2aa085;--p:#173d2c;--pt:#7be0aa;--a:#46241a;--at:#ff9b78;--h:#40340f;--ht:#f2cf6b;--hol:#1d2c4d;--holt:#9fbcf7}
 *{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--ink);font:15px/1.5 "Trebuchet MS",Verdana,system-ui,sans-serif}
-header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--pri);color:#fff}
+header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--pri);color:var(--on,#fff)}
 header img{height:44px;width:44px;object-fit:contain;background:#fff;border-radius:10px;padding:3px}
 header h1{font:700 20px/1.2 Georgia,serif;margin:0}
 nav{display:flex;gap:4px;overflow-x:auto;padding:8px 10px;background:var(--card);border-bottom:1px solid var(--ln);position:sticky;top:env(safe-area-inset-top,0px);z-index:3}
 nav button{flex:0 0 auto;border:0;background:none;color:var(--mut);font:600 14px "Trebuchet MS",Verdana,system-ui,sans-serif;padding:8px 13px;border-radius:999px;cursor:pointer}
-nav button.on{background:var(--pri);color:#fff}
+nav button.on{background:var(--pri);color:var(--on,#fff)}
 main{max-width:980px;margin:0 auto;padding:14px}
 .card{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:14px;margin-bottom:14px}
 h2{font:700 18px Georgia,serif;margin:0 0 10px}h3{margin:0 0 8px;font-size:15px}
@@ -19,11 +19,11 @@ h2{font:700 18px Georgia,serif;margin:0 0 10px}h3{margin:0 0 8px;font-size:15px}
 label{display:block;font-size:13px;color:var(--mut);flex:1 1 150px}
 input,select,textarea{width:100%;margin-top:3px;padding:9px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
 input[type=checkbox]{width:auto;margin:0 6px 0 0}
-button.b{border:0;background:var(--pri);color:#fff;border-radius:9px;padding:9px 15px;font:600 14px "Trebuchet MS",Verdana,system-ui,sans-serif;cursor:pointer}
-button.b:hover{background:var(--pri2)}button.g{background:none;color:var(--pri);border:1px solid var(--pri)}button.d{background:none;color:var(--at);border:1px solid var(--at)}
+button.b{border:0;background:var(--pri);color:var(--on,#fff);border-radius:9px;padding:9px 15px;font:600 14px "Trebuchet MS",Verdana,system-ui,sans-serif;cursor:pointer}
+button.b:hover{background:var(--pri2)}button.g{background:none;color:var(--pg,var(--pri));border:1px solid var(--pg,var(--pri))}button.d{background:none;color:var(--at);border:1px solid var(--at)}
 button.s{padding:5px 10px;font-size:13px}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f2a900;outline-offset:1px}
-.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:480px}th{background:var(--pri);color:#fff;text-align:left;padding:8px;font-size:13px;white-space:nowrap}td{padding:8px;border-top:1px solid var(--ln);white-space:nowrap}td.n,th.n{text-align:right}tr.t td{font-weight:700;background:var(--bg)}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:480px}th{background:var(--pri);color:var(--on,#fff);text-align:left;padding:8px;font-size:13px;white-space:nowrap}td{padding:8px;border-top:1px solid var(--ln);white-space:nowrap}td.n,th.n{text-align:right}tr.t td{font-weight:700;background:var(--bg)}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.cal .wd{text-align:center;font-size:12px;color:var(--mut)}
 .day{border:1px solid var(--ln);border-radius:9px;min-height:58px;padding:4px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer;text-align:left;display:flex;flex-direction:column;justify-content:space-between}
 .day b{font-size:13px}.day small{font-size:11px;font-weight:700;line-height:1.1;overflow:hidden}
@@ -34,8 +34,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;display:none;z-index:9}
 .logo-prev{height:64px;width:64px;object-fit:contain;border:1px solid var(--ln);border-radius:10px;background:#fff}
 .rh{display:none}
-.ex{margin-left:10px;background:none;border:1px solid #fff;color:#fff;border-radius:8px;padding:6px 12px;font:600 13px "Trebuchet MS",Verdana,system-ui,sans-serif;cursor:pointer}.ex.x{background:#d92d20;border-color:#d92d20}.ex.x:hover{background:#b42318;border-color:#b42318}
-.ex:disabled{opacity:.6;cursor:wait}.ex:hover{background:rgba(255,255,255,.18)}
+.ex{margin-left:10px;background:none;border:1px solid var(--on,#fff);color:var(--on,#fff);border-radius:8px;padding:6px 12px;font:600 13px "Trebuchet MS",Verdana,system-ui,sans-serif;cursor:pointer}.ex.x{background:#d92d20;border-color:#d92d20;color:#fff}.ex.x:hover{background:#b42318;border-color:#b42318}
+.sw{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 12px}.swb{width:38px;height:38px;border-radius:50%;border:3px solid var(--card);box-shadow:0 0 0 1px var(--ln);cursor:pointer;padding:0}.swb.on{box-shadow:0 0 0 3px var(--ink)}.cp{flex:0 0 auto;display:flex;align-items:center;gap:8px}.cp input{width:44px;height:38px;padding:0;margin:0;border:0;background:none}
+.ex:disabled{opacity:.6;cursor:wait}.ex:hover{background:rgba(128,128,128,.25)}
 .sy{margin-left:auto;font-size:12px;opacity:.9;text-align:right}
 html{-webkit-text-size-adjust:100%;touch-action:manipulation}
 @media(max-width:700px){
@@ -65,6 +66,21 @@ fd=s=>s?s.slice(8,10)+'-'+s.slice(5,7)+'-'+s.slice(0,4):'';
 const DEF=()=>({label:'Household Help Register',logo:'',people:[],att:{},pay:[],hol:[],extra:[],at:{},nt:{},nat:{},del:{},lbt:0});
 let S;try{S=Object.assign(DEF(),JSON.parse(localStorage.getItem(K)||'{}'))}catch(e){S=DEF()}
 const now=new Date(),ui={tab:'att',pid:'',mon:now.getFullYear()+'-'+pad(now.getMonth()+1),ry:now.getFullYear(),rt:'month',rp:'all',edit:null};
+const LK=K+'-look',PRE=['#0e7c66','#1d4ed8','#6d28d9','#be185d','#c2410c','#0f766e','#334155','#b91c1c','#a16207'];
+let LOOK={th:'auto',acc:'',fs:15};try{Object.assign(LOOK,JSON.parse(localStorage.getItem(LK)||'{}'))}catch(e){}
+const lum=h=>{const n=parseInt(h.slice(1),16),f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};return .2126*f(n>>16)+.7152*f(n>>8&255)+.0722*f(n&255)},
+mix=(h,t,a)=>{const n=parseInt(h.slice(1),16);return'#'+[n>>16,n>>8&255,n&255].map(v=>Math.round(v+(t-v)*a).toString(16).padStart(2,'0')).join('')};
+function look(){const r=document.documentElement,L=LOOK,st=r.style;if(L.th=='auto')r.removeAttribute('data-theme');else r.dataset.theme=L.th;
+ const dark=L.th=='dark'||(L.th=='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);
+ if(L.acc){let a=L.acc;if(dark&&lum(a)<.12)a=mix(a,255,.35);st.setProperty('--pri',a);st.setProperty('--pri2',mix(a,0,.22));st.setProperty('--pg',dark?mix(L.acc,255,.45):a);st.setProperty('--on',lum(a)>.45?'#111':'#fff')}
+ else['--pri','--pri2','--pg','--on'].forEach(v=>st.removeProperty(v));
+ document.body.style.fontSize=(L.fs||15)+'px'}
+function savLook(){try{localStorage.setItem(LK,JSON.stringify(LOOK))}catch(e){}look()}
+function setTheme(v){LOOK.th=v;savLook()}
+function setFs(v){LOOK.fs=+v;savLook()}
+function setAcc(c){LOOK.acc=c;savLook();draw()}
+function resetLook(){LOOK={th:'auto',acc:'',fs:15};savLook();draw();toast('Appearance reset')}
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',look)}catch(e){}
 let CFG={};try{CFG=JSON.parse(localStorage.getItem(K+'-cfg')||'{}')}catch(e){}
 let RTS=0,pushT,busy=false,dirty=false;
 const on=()=>CFG.url&&CFG.key,setSt=t=>{const e=$('#sy');if(e)e.textContent=t};
@@ -153,6 +169,9 @@ hol(){const y=ui.ry,L=S.hol.filter(h=>h.date.slice(0,4)==y).sort((a,b)=>a.date.l
 rep(){setTimeout(rep,0);return `<div class="card noprint"><h2>Reports</h2><div class="row"><label>Report<select onchange="ui.rt=this.value;rep()" id="rt">${[['month','Monthly statement (everyone)'],['year','Yearly summary'],['ledger','Payment ledger'],['reg','Attendance register'],['notes','Attendance notes']].map(([k,n])=>`<option value="${k}" ${k==ui.rt?'selected':''}>${n}</option>`).join('')}</select></label>${psel('rp',ui.rp,1)}<label>Month<input type="month" value="${ui.mon}" onchange="ui.mon=this.value||ui.mon;ui.ry=+ui.mon.slice(0,4);rep()"></label><label>Year<input type="number" value="${ui.ry}" onchange="ui.ry=+this.value;rep()"></label></div></div><div class="card" id="rep"></div>`},
 set(){return `<div class="card"><h2>App name and logo</h2><div class="row"><label>Label shown at the top<input id="sl" value="${esc(S.label)}"></label><button class="b" onclick="S.label=$('#sl').value.trim()||'Household Help Register';S.lbt=Date.now();save();brand();toast('Label saved')">Save label</button></div>
  <div class="row" style="margin-top:14px">${S.logo?`<img class="logo-prev" src="${S.logo}" alt="Logo">`:'<span class="mut">No logo yet.</span>'}<label>Choose a logo image<input type="file" accept="image/*" onchange="logo(this)"></label>${S.logo?'<button class="b d" onclick="S.logo=\'\';S.lbt=Date.now();save();draw()">Remove logo</button>':''}</div></div>
+ <div class="card"><h2>Appearance</h2><div class="row"><label>Theme<select onchange="setTheme(this.value)"><option value="auto" ${LOOK.th=='auto'?'selected':''}>Automatic (follow my device)</option><option value="light" ${LOOK.th=='light'?'selected':''}>Light</option><option value="dark" ${LOOK.th=='dark'?'selected':''}>Dark</option></select></label><label>Text size<select onchange="setFs(this.value)">${[[14,'Small'],[15,'Normal'],[17,'Large'],[19,'Extra large']].map(([v,n])=>`<option value="${v}" ${(LOOK.fs||15)==v?'selected':''}>${n}</option>`).join('')}</select></label></div>
+ <h3 style="margin-top:14px">Colour</h3><div class="sw">${PRE.map(c=>`<button class="swb ${(LOOK.acc||PRE[0]).toLowerCase()==c?'on':''}" style="background:${c}" aria-label="Colour ${c}" onclick="setAcc('${c}')"></button>`).join('')}<label class="cp">Custom<input type="color" value="${LOOK.acc||PRE[0]}" onchange="setAcc(this.value)"></label></div>
+ <div class="row"><button class="b g s" onclick="resetLook()">Reset to default</button></div><p class="mut">Appearance is saved on this device only, so your phone and computer can look different.</p></div>
  <div class="card"><h2>Sync across devices</h2><p class="mut">Uses your own free Google account. Do the one-time steps in SETUP.txt, then enter the same address and key on every phone and computer.</p><div class="row"><label>Web app address<input id="su" value="${esc(CFG.url||'')}" placeholder="https://script.google.com/macros/s/…/exec"></label><label>Secret key<input id="sk" type="password" value="${esc(CFG.key||'')}"></label></div><div class="row" style="margin-top:10px"><button class="b" onclick="saveSync()">Save and sync</button>${on()?'<button class="b g" onclick="pull()">Sync now</button><button class="b d" onclick="stopSync()">Turn off sync</button>':''}</div></div>
  <div class="card"><h2>Backup and restore</h2><p class="mut">Data is also kept on each device, so the app opens offline. Copy a backup now and then and keep it somewhere safe.</p><div class="row"><button class="b g" onclick="txt('Backup (copy and save this text)',JSON.stringify(S))">Show backup text</button><button class="b g" onclick="restore()">Restore from backup text</button></div><div id="tx"></div></div>`}};
 function stamp(m,pid,k){(m[pid]=m[pid]||{})[k]=Date.now()}
@@ -191,5 +210,5 @@ function rep(){const el=$('#rep');if(!el)return;const[y,m]=ym(ui.mon),t=ui.rt,pp
  el.innerHTML=`<div class="rh">${S.logo?`<img src="${S.logo}" alt="">`:''}<b>${esc(S.label)}</b></div><h2>${esc(T)}</h2><div class="tw"><table><tr>${hd.map((h,i)=>`<th class="${i>=hd.length-3&&t!='reg'&&t!='notes'?'n':''}">${esc(h)}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i>=hd.length-3&&t!='reg'&&t!='notes'?'n':''}">${esc(c)}</td>`).join('')}</tr>`).join('')}${tot?`<tr class="t">${tot.map((c,i)=>`<td class="${i>=hd.length-3?'n':''}">${esc(c)}</td>`).join('')}</tr>`:''}</table></div>
  ${t=='reg'?'<p class="mut">P present, A absent, ½ half day, H holiday, – not marked.</p>':''}<div class="row noprint" style="margin-top:12px"><button class="b" onclick="window.print()">Print or save as PDF</button><button class="b g" onclick="csv()">Show as CSV</button></div><div id="tx" class="noprint"></div>`}
 function csv(){const q=c=>'"'+String(c).replace(/"/g,'""')+'"',a=[RD.T,RD.hd,...RD.rows];if(RD.tot)a.push(RD.tot);txt('Copy this text and paste it into Excel or Google Sheets.',a.map(r=>[].concat(r).map(q).join(',')).join('\n'))}
-draw();if(on()){setSt('Connecting…');pull();setInterval(pull,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)pull()})}else setSt('This device only');
+look();draw();if(on()){setSt('Connecting…');pull();setInterval(pull,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)pull()})}else setSt('This device only');
 </script></body></html>
