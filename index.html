@@ -34,7 +34,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;display:none;z-index:9}
 .logo-prev{height:64px;width:64px;object-fit:contain;border:1px solid var(--ln);border-radius:10px;background:#fff}
 .rh{display:none}
-.ex{margin-left:10px;background:none;border:1px solid #fff;color:#fff;border-radius:8px;padding:6px 12px;font:600 13px "Trebuchet MS",Verdana,system-ui,sans-serif;cursor:pointer}.ex:disabled{opacity:.6;cursor:wait}.ex:hover{background:rgba(255,255,255,.18)}
+.ex{margin-left:10px;background:none;border:1px solid #fff;color:#fff;border-radius:8px;padding:6px 12px;font:600 13px "Trebuchet MS",Verdana,system-ui,sans-serif;cursor:pointer}.ex.x{background:#d92d20;border-color:#d92d20}.ex.x:hover{background:#b42318;border-color:#b42318}
+.ex:disabled{opacity:.6;cursor:wait}.ex:hover{background:rgba(255,255,255,.18)}
 .sy{margin-left:auto;font-size:12px;opacity:.9;text-align:right}
 html{-webkit-text-size-adjust:100%;touch-action:manipulation}
 @media(max-width:700px){
@@ -52,7 +53,7 @@ table{min-width:420px}
 }
 @media print{header,nav,.noprint,#toast{display:none!important}.rh{display:flex;align-items:center;gap:10px;margin-bottom:10px}.rh img{height:40px}body{background:#fff;color:#000}.card{border:0;padding:0}th{background:#ddd!important;color:#000!important}}
 </style></head><body>
-<header><img id="hl" alt="" style="display:none"><h1 id="hn"></h1><span class="sy" id="sy">Connecting…</span><button class="ex" id="sb" onclick="syncNow()" title="Sync now">Sync</button><button class="ex" onclick="exitApp()" title="Save and exit">Exit</button></header>
+<header><img id="hl" alt="" style="display:none"><h1 id="hn"></h1><span class="sy" id="sy">Connecting…</span><button class="ex" id="sb" onclick="syncNow()" title="Sync now">Sync</button><button class="ex x" onclick="exitApp()" title="Save and exit">Exit</button></header>
 <nav id="nav"></nav><main id="m"></main><div id="toast"></div>
 <script>
 const K='helpbook-v1',$=s=>document.querySelector(s),pad=n=>String(n).padStart(2,'0'),
